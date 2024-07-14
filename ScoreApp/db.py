@@ -2,13 +2,34 @@ import sqlite3
 
 DATABASE = 'game_data.db'
 
-def create_db_table():
-    pass
-
 def get_db_connection():
     con = sqlite3.connect(DATABASE)
     con.row_factory = sqlite3.Row
     return con
+
+def create_db_table():
+    con = get_db_connection()
+    
+    create_players_query = ('''CREATE TABLE IF NOT EXISTS players (
+                                player_id = INTEGER PRIMARY KEY AUTOINCREMENT,
+                                player_name TEXT NOT NULL,
+                                created_at TEXT NOT NULL DEFAULT (datetime('now'))
+                            )
+                            ''')
+    
+    create_scores_query = ('''CREATE TABLE IF NOT EXISTS scores (
+                                score_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                score INTEGER NOT NULL DEFAULT 0,
+                                player_id INTEGER NOT NULL,
+                                created_at TEXT NOT NULL DEFAULT (datetime('now')),
+                                FOREIGN KEY (player_id) REFERNCES players(player_id)
+                            )
+                            ''')
+    
+    con.execute(create_players_query)
+    con.execute(create_scores_query)
+    con.commit()
+    con.close()
 
 def add_player(player_name_data):
     con = get_db_connection()

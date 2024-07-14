@@ -14,7 +14,7 @@ def sendData():
     playerName = data.get('playerName')
     
     db.add_data(score, playerName)
-    print(jsonify({'score': score, 'playerName': playerName}))
+    print(jsonify({'score': score, 'player_name': playerName}))
 
 @app.route('/getData', methods=['GET'])
 def getData():
