@@ -1,4 +1,5 @@
 import sqlite3
+from flask import jsonify
 
 DATABASE = 'game_data.db'
 
@@ -11,10 +12,10 @@ def create_db_table():
     con = get_db_connection()
     
     create_players_query = ('''CREATE TABLE IF NOT EXISTS players (
-                                player_id = INTEGER PRIMARY KEY AUTOINCREMENT,
+                                player_id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 player_name TEXT NOT NULL,
                                 created_at TEXT NOT NULL DEFAULT (datetime('now'))
-                            )
+                            );
                             ''')
     
     create_scores_query = ('''CREATE TABLE IF NOT EXISTS scores (
@@ -22,8 +23,8 @@ def create_db_table():
                                 score INTEGER NOT NULL DEFAULT 0,
                                 player_id INTEGER NOT NULL,
                                 created_at TEXT NOT NULL DEFAULT (datetime('now')),
-                                FOREIGN KEY (player_id) REFERNCES players(player_id)
-                            )
+                                FOREIGN KEY (player_id) REFERENCES players(player_id)
+                            );
                             ''')
     
     con.execute(create_players_query)
@@ -74,9 +75,9 @@ def add_score(score_data, player_name_data):
             INSERT INTO scores (score, player_id)
             VALUES (?, ?)
             ''')
-    player_name = get_player_id(player_name_data)
+    player_id = get_player_id(player_name_data)
     
-    con.execute(add_score_query, [score_data, player_name])
+    con.execute(add_score_query, [score_data, player_id])
     con.commit()
     con.close()
 
@@ -86,7 +87,6 @@ def add_data(score_data, player_name_data):
     
     score = score_data
     player_name = get_player_id(player_name_data)
-    print('Success : add_data')
 
 def display_list():
     con = get_db_connection()
@@ -102,7 +102,7 @@ def display_list():
     
     score_and_player = []
     for data in db_list:
-        score_and_player.append({'score' : data['score'], 'playerName' : data['player_name']})
+        score_and_player.append({"score" : data['score'], "playerName" : data['player_name']})
     
     con.close()
-    return score_and_player
+    return jsonify(score_and_player)

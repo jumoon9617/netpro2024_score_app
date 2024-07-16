@@ -42,3 +42,6 @@ instance/
 
 # Windows
 Thumbs.db
+
+#Dockerfile
+Dockerfile

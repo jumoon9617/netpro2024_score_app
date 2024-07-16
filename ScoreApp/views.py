@@ -11,12 +11,14 @@ def index():
 def sendData():
     data = request.json
     score = data.get('score')
-    playerName = data.get('playerName')
+    player_name = data.get('playerName')
     
-    db.add_data(score, playerName)
-    print(jsonify({'score': score, 'player_name': playerName}))
+    db.add_data(score, player_name)
+    print(f'success : /sendData\nscore : {score}\nplayer_name : {player_name}')
+    return(jsonify({'score': score, 'player_name': player_name}))
 
 @app.route('/getData', methods=['GET'])
 def getData():
     data = db.display_list()
+    print('success : /getData')
     return data
